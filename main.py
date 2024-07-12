@@ -2,6 +2,7 @@ import fastapi
 from fastapi import HTTPException
 from scrapy.crawler import CrawlerProcess
 from utils.scrap import VitiviniculturaSpider
+from utils.producao import Producao
 
 app = fastapi.FastAPI()
 
@@ -25,3 +26,12 @@ async def scrap_data():
         return {"message": "Scrap finalizado com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        
+        
+@app.get("/producao/id/{id}")
+async def producao(id: int = 0, ano: int = 0):
+
+    prod = Producao(id,'data/producao.json',ano)
+    # print(itiro)
+    data = prod.listar_por_id_ano()
+    return data
