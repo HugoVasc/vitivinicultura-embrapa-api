@@ -1,10 +1,15 @@
 import fastapi
 from fastapi import HTTPException
+from .models import Base
 from scrapy.crawler import CrawlerProcess
-from utils.scrap import VitiviniculturaSpider
-from utils.producao import Producao
+from ..vitivinicultura_spider.vitivinicultura_spider.spiders.spider import (
+    VitiviniculturaSpider,
+)
+from .database import engine
 
 app = fastapi.FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
@@ -13,6 +18,7 @@ async def root():
     Rota default
     """
     return {"message": "Hello World"}
+
 
 @app.get("/scrap")
 async def scrap_data():
@@ -26,12 +32,4 @@ async def scrap_data():
         return {"message": "Scrap finalizado com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        
-        
-@app.get("/producao/id/{id}")
-async def producao(id: int = 0, ano: int = 0):
-
-    prod = Producao(id,'data/producao.json',ano)
-    # print(itiro)
-    data = prod.listar_por_id_ano()
-    return data
+    
