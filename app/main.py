@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from .routes import producao
 from .models import Base
 from scrapy.crawler import CrawlerProcess
-from ..vitivinicultura_spider.vitivinicultura_spider.spiders.spider import (
+from vitivinicultura_spider.vitivinicultura_spider.spiders.spider import (
     VitiviniculturaSpider,
 )
 from .database import engine
