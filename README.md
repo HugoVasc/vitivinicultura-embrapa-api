@@ -12,10 +12,9 @@ API Pública para consulta de dados de produção, processamento, comercializaç
 - Rodrigo Souza - RM357944
 
 ## Iniciar o App
-
-'''
+```
 uvicorn app.main:app --reload --host 0.0.0.0
-'''
+```
 
 ## Documentação da API
 

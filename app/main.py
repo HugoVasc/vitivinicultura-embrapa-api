@@ -1,6 +1,6 @@
 import fastapi
 from fastapi import HTTPException
-from .routes import producao
+from .routes import producao,comercializacao,processamento,exportacao,importacao
 from .models import Base
 from scrapy.crawler import CrawlerProcess
 from vitivinicultura_spider.vitivinicultura_spider.spiders.spider import (
@@ -35,3 +35,7 @@ async def scrap_data():
         raise HTTPException(status_code=500, detail=str(e))
     
 app.include_router(producao.router)
+app.include_router(comercializacao.router)
+app.include_router(exportacao.router)
+app.include_router(importacao.router)
+app.include_router(processamento.router)
