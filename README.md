@@ -11,6 +11,11 @@ API Pública para consulta de dados de produção, processamento, comercializaç
 - João Dias - RM357713
 - Rodrigo Souza - RM357944
 
+## Iniciar o App
+```
+uvicorn app.main:app --reload --host 0.0.0.0
+```
+
 ## Documentação da API
 
 ### Realiza o scrap dos dados
