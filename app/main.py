@@ -30,7 +30,6 @@ async def scrap_data():
         process = CrawlerProcess()
         process.crawl(VitiviniculturaSpider)
         process.start()
-        process.stop()
         return {"message": "Scrap finalizado com sucesso!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
