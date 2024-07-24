@@ -9,6 +9,7 @@ API Pública para consulta de dados de produção, processamento, comercializaç
 - Hugo Vasconcelos - RM358003
 - Itiro - RM357371
 - João Dias - RM357713
+- Rodrigo Souza - RM357944
 
 ## Iniciar o App
 ```
