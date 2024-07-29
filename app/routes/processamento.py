@@ -12,16 +12,6 @@ router = APIRouter(
 )
 
 def format_response(result):
-    # result_list = []
-    # for item in result:
-    #     result_dict = {
-    #         "GrapeVarieties": item[0].__dict__,
-    #         "GrapeCategories": item[1].__dict__,
-    #         "GrapeSubCategories": item[2].__dict__,
-    #         "ProcessedGrapes": item[3].__dict__,
-    #     }
-    #     result_list.append(result_dict)
-    # return result_list
     response = {}
     for item in result:
         response[str(item[0].id)] ={
@@ -51,9 +41,8 @@ def format_response(result):
 @router.get("/", status_code=status.HTTP_200_OK)
 async def processamento():
     """
-    Rota Default para /processamento
+    Rota Default para obter todos os dados de processamento
     """
-    # JOIN com GrapeVarieties, GrapeCategories e GrapeSubCategories e ProcessedGrapes
     result = SessionLocal().query(
         GrapeVarieties,
         GrapeCategories,
@@ -72,9 +61,8 @@ async def processamento():
 @router.get("/id_categoria/{category_id}", status_code=status.HTTP_200_OK)
 async def processamento_by_category_id(category_id: int):
     """
-    Rota para /processamento/by_category_id/{category_id}
+    Rota para obter os dados de processamento por categoria
     """
-    # JOIN com GrapeVarieties, GrapeCategories e GrapeSubCategories e ProcessedGrapes
     result = SessionLocal().query(
         GrapeVarieties,
         GrapeCategories,
@@ -94,9 +82,8 @@ async def processamento_by_category_id(category_id: int):
 @router.get("/ano/{year}", status_code=status.HTTP_200_OK)
 async def processamento_by_year(year: int):
     """
-    Rota para /processamento/by_year/{year}
+    Rota obtendo os dados de processamento por ano
     """
-    # JOIN com GrapeVarieties, GrapeCategories e GrapeSubCategories e ProcessedGrapes
     result = SessionLocal().query(
         GrapeVarieties,
         GrapeCategories,
@@ -116,9 +103,8 @@ async def processamento_by_year(year: int):
 @router.get("/id_categoria/{category_id}/ano/{year}", status_code=status.HTTP_200_OK)
 async def processamento_by_category_id_and_year(category_id: int, year: int):
     """
-    Rota para /processamento/by_category_id_and_year/{category_id}/{year}
+    Rota para obter os dados de processamento por categoria e ano
     """
-    # JOIN com GrapeVarieties, GrapeCategories e GrapeSubCategories e ProcessedGrapes
     result = SessionLocal().query(
         GrapeVarieties,
         GrapeCategories,
