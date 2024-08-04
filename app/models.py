@@ -1,19 +1,17 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 
 
 class WineCategories(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
 
 
 class WineSubCategories(Base):
     __tablename__ = "sub_categories"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"))
 
 
@@ -53,7 +51,6 @@ class GrapeVarieties(Base):
     __tablename__ = "grape_varieties"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
 
 
 class GrapeCategories(Base):
@@ -61,14 +58,12 @@ class GrapeCategories(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     variety_id = Column(Integer, ForeignKey("grape_varieties.id"))
-    description = Column(String, nullable=False)
 
 
 class GrapeSubCategories(Base):
     __tablename__ = "grape_sub_categories"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("grape_categories.id"))
 
 
@@ -77,15 +72,17 @@ class ProcessedGrapes(Base):
     id = Column(Integer, primary_key=True, index=True)
     category_id = Column(Integer, ForeignKey("grape_categories.id"))
     subcategory_id = Column(Integer, ForeignKey("grape_sub_categories.id"))
+    variety_id = Column(Integer, ForeignKey("grape_varieties.id"))
     year = Column(Integer, nullable=False)
-    quantity_kg = Column(Integer, nullable=False)
+    quantity_in_kg = Column(Integer, nullable=False)
 
 
 class GoodsImportedExported(Base):
     __tablename__ = "goods_imported_exported"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
-    description = Column(String, nullable=False)
+    imported = Column(Boolean, nullable=False, default=False)
+    exported = Column(Boolean, nullable=False, default=False)
 
 
 class CommonColumnsImportExport(Base):
@@ -93,7 +90,7 @@ class CommonColumnsImportExport(Base):
     id = Column(Integer, primary_key=True, index=True)
     countries = Column(String, nullable=False)
     quantity_kg = Column(Integer, nullable=False)
-    value_usdolars = Column(Integer, nullable=False)
+    value_us_dollars = Column(Integer, nullable=False)
     year = Column(Integer, nullable=False, index=True)
     goods_id = Column(Integer, ForeignKey("goods_imported_exported.id"))
 
