@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 
 #Read the CSV file
-df = pd.read_csv('Producao.csv',sep=';')
+df = pd.read_csv('../data/Producao.csv',sep=';')
 
 #Banco de Dados
 try:
@@ -22,12 +22,12 @@ for index, row in newdf.iterrows():
     id = int(row['id'])
     control = row['control']
     produto = row['produto']
-    conn.execute(f"INSERT INTO sub_categories (id, control, produto) VALUES ({id},'{control}','{produto}')")
+    conn.execute(f"INSERT INTO sub_categories (name, description) VALUES ('{control}','{produto}')")
     conn.commit()
     
     for ano in range(1970,2024):
         quantity_l = row[str(ano)]
-        conn.execute(f"INSERT INTO sub_categories_with_quantity (sub_category_id, year, quantity_l) VALUES ({id},'{str(ano)}','{quantity_l}')")
+        conn.execute(f"INSERT INTO sub_categories_with_quantity (subcategory_id, year, quantity_l) VALUES ({id},'{str(ano)}','{quantity_l}')")
         conn.commit()
         #print(f"{id} {ano} {quantity_l}")
 

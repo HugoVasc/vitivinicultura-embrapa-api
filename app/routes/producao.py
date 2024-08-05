@@ -34,7 +34,7 @@ def get_id_ano(id: int):
     control = 'NA'
     produto = 'NA'
     try:
-        cur.execute(f'SELECT control,produto FROM sub_categories WHERE id={id}')
+        cur.execute(f'SELECT name,description FROM sub_categories WHERE id={id}')
         rows = cur.fetchall()
         for row in rows:
            control = row[0]
@@ -85,7 +85,7 @@ def get_ano(id: int, ano: int):
     control = 'NA'
     produto = 'NA'
     try:
-        cur.execute(f'SELECT control,produto FROM sub_categories WHERE id={id}')
+        cur.execute(f'SELECT name,description FROM sub_categories WHERE id={id}')
         rows = cur.fetchall()
         for row in rows:
            control = row[0]
