@@ -11,7 +11,18 @@ API Pública para consulta de dados de produção, processamento, comercializaç
 - João Dias - RM357713
 
 ## Iniciar o App
+
 ```
+#Criar um virtual environment (venv)
+python3 -m venv venv
+
+#Entrar no virtual env
+source venv/bin/activate
+
+#Instalar os módulos 
+pip3 install -r requirements.txt
+
+#Inicializar o uvicorn
 uvicorn app.main:app --reload --host 0.0.0.0
 ```
 
