@@ -15,13 +15,13 @@ class VitiviniculturaSpider(scrapy.Spider):
     def __init__(self):
         """
         Inicializa o spider
-        Verifica se a pasta data existe, se não cria
+        Verifica se a pasta data/raw_data existe, se não cria
         """
         super(VitiviniculturaSpider, self).__init__()
         self.log("Iniciando o spider...")
-        # verifica se pasta data existe se não cria
-        if not os.path.exists(os.path.join("..", "data")):
-            os.makedirs(os.path.join("..", "data"))
+        # verifica se pasta data/raw_data existe se não cria
+        if not os.path.exists(os.path.join("..", "data", "raw_data")):
+            os.makedirs(os.path.join("..", "data", "raw_data"))
 
     def start_requests(self):
         """
@@ -88,10 +88,10 @@ class VitiviniculturaSpider(scrapy.Spider):
 
     def save_file(self, response: scrapy.http.Response):
         """
-        Baixa e salva o arquivo na pasta data/ do projeto
+        Baixa e salva o arquivo na pasta data/raw_data do projeto
         """
         filename = response.url.split("/")[-1]
-        file_path = os.path.join(os.path.join(".."), "data", filename)
+        file_path = os.path.join(os.path.join("..", "data", "raw_data"), filename)
         with open(file_path, "wb") as f:
             f.write(response.body)
         self.log(f"Salvo arquivo {file_path}")
@@ -102,7 +102,7 @@ class VitiviniculturaSpider(scrapy.Spider):
         """
         data = {"main_button": main_button, "sub_buttons": sub_buttons}
         filename = f"{main_button['value']}_sub_buttons.json"
-        file_path = os.path.join(os.path.join(".."), "data", filename)
+        file_path = os.path.join(os.path.join("..", "data", "raw_data"), filename)
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
         self.log(f"Salvo arquivo de sub botões {file_path}")
