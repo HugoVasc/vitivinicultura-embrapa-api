@@ -1,7 +1,7 @@
 import os
 import pandas as pd
-from app.database import SessionLocal
-from app.models import (
+from .database import SessionLocal
+from .models import (
     WineCategories,
     WineSubCategories,
     ProducedWineCategoriesWithQuantity,
