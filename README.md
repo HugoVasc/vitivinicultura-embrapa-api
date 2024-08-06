@@ -96,7 +96,9 @@ Consulta dos dados de **EXPORTACAO**
   GET /exportacao
 ```
 
+## Plano / Desenho
 
+[diagrama](image/plano.png)
 
 ## Colaboradores:
 
