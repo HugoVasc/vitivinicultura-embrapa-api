@@ -47,13 +47,13 @@ uvicorn app.main:app --reload --host 0.0.0.0
 
 ## Documentação da API
 
-### **SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados (SQLite)
+**SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados (SQLite)
 
 ```http
   GET /scrape_and_save_data/scrape_and_save
 ```
 
-### Consulta dos dados de **PRODUCAO**
+Consulta dos dados de **PRODUCAO**
 
 ```http
   GET /producao
@@ -64,7 +64,7 @@ uvicorn app.main:app --reload --host 0.0.0.0
   GET /producao/subcategoria/tipo
 ```
 
-### Consulta dos dados de **PROCESSAMENTO**
+Consulta dos dados de **PROCESSAMENTO**
 
 ```http
   GET /processamento
@@ -73,19 +73,19 @@ uvicorn app.main:app --reload --host 0.0.0.0
   GET /processamento/id_categoria/{category_id}/ano/{year}
 ```
 
-### Consulta dos dados de **COMERCIALIZACAO**
+Consulta dos dados de **COMERCIALIZACAO**
 
 ```http
   GET /comercializacao
 ```
 
-### Consulta dos dados de **IMPORTACAO**
+Consulta dos dados de **IMPORTACAO**
 
 ```http
   GET /importacao
 ```
 
-### Consulta dos dados de **EXPORTACAO**
+Consulta dos dados de **EXPORTACAO**
 
 ```http
   GET /exportacao
