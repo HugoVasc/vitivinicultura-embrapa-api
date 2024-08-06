@@ -34,9 +34,9 @@ class ProducedWineSubCategoriesWithQuantity(Base):
 class ComercializedWineCategoriesWithQuantity(Base):
     __tablename__ = "comercialized_categories_with_quantity"
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"))
+    category = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    quantity_in_l = Column(Integer, nullable=False)
 
 
 class ComercializedWineSubCategoriesWithQuantity(Base):
@@ -44,7 +44,7 @@ class ComercializedWineSubCategoriesWithQuantity(Base):
     id = Column(Integer, primary_key=True, index=True)
     subcategory_id = Column(Integer, ForeignKey("sub_categories.id"))
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    value = Column(Integer, nullable=False)
 
 
 class GrapeVarieties(Base):
