@@ -32,7 +32,9 @@ def scrape_data():
     """
     Função para realizar o scrap dos dados
     """
-    process = CrawlerProcess()
+    process = CrawlerProcess(settings={
+        "LOG_LEVEL": "DEBUG",
+    })
     process.crawl(VitiviniculturaSpider)
     process.start()
 
@@ -52,7 +54,7 @@ def preprocess_data():
             capture_output=True,
             text=True,
             check=True,
-            cwd=os.path.join(current_dir, 'data')  # Set the working directory to the 'data' folder
+            cwd=current_dir  # Set the working directory to the current directory
         )
         print("Preprocessing output:", result.stdout)
         print("Preprocessing errors:", result.stderr)

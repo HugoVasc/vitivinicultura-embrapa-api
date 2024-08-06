@@ -16,13 +16,14 @@ warnings.filterwarnings('ignore')
 
 # Read the data from the CSV file, as one is needed because they follow the same format
 
-producao_data = pd.read_csv('raw_data/Producao.csv', sep=';')
+raw_data_path = 'data/raw_data/'
+producao_data = pd.read_csv(f'{raw_data_path}Producao.csv', sep=';')
 producao_data.head()
 
 # In[3]:
 
 
-comercio_data = pd.read_csv('raw_data/Comercio.csv', sep=';')
+comercio_data = pd.read_csv(f'{raw_data_path}Comercio.csv', sep=';')
 comercio_data.head()
 
 # In[4]:
@@ -231,7 +232,7 @@ comercio_data_subcategory = map_subcategories_to_ids(comercio_data_subcategory, 
 
 import json
 
-with open('raw_data/opt_03_sub_buttons.json') as f:
+with open(f'{raw_data_path}opt_03_sub_buttons.json') as f:
     data = json.load(f)
 
 # In[27]:
@@ -247,7 +248,7 @@ grapes_varieties_df = pd.DataFrame(
 # In[28]:
 
 
-viniferas_table = pd.read_csv('raw_data/ProcessaViniferas.csv', sep=';')
+viniferas_table = pd.read_csv(f'{raw_data_path}ProcessaViniferas.csv', sep=';')
 viniferas_table['variety_id'] = \
     grapes_varieties_df[grapes_varieties_df['grapes_variety'].str.contains('Viníferas')].index[0]
 viniferas_table.head()
@@ -262,7 +263,7 @@ viniferas_grape_categories_df = viniferas_table.loc[:, ['control', 'variety_id']
 # In[30]:
 
 
-americanas_table = pd.read_csv('raw_data/ProcessaAmericanas.csv', sep='\\t', engine='python')
+americanas_table = pd.read_csv(f'{raw_data_path}ProcessaAmericanas.csv', sep='\\t', engine='python')
 americanas_table['variety_id'] = \
     grapes_varieties_df[grapes_varieties_df['grapes_variety'].str.contains('Americanas')].index[0]
 americanas_table.head()
@@ -277,7 +278,7 @@ americanas_table_categories_df = americanas_table.loc[:, ['control', 'variety_id
 # In[32]:
 
 
-mesa_table = pd.read_csv('raw_data/ProcessaMesa.csv', sep='\\t', engine='python')
+mesa_table = pd.read_csv(f'{raw_data_path}ProcessaMesa.csv', sep='\\t', engine='python')
 mesa_table['variety_id'] = grapes_varieties_df[grapes_varieties_df['grapes_variety'] == 'Uvas de mesa'].index[0]
 mesa_table.head()
 
@@ -290,7 +291,7 @@ mesa_table_categories_df = mesa_table.loc[:, ['control', 'variety_id']][
 # In[34]:
 
 
-sem_classed_table = pd.read_csv('raw_data/ProcessaSemClass.csv', sep='\\t', engine='python')
+sem_classed_table = pd.read_csv(f'{raw_data_path}ProcessaSemClass.csv', sep='\\t', engine='python')
 sem_classed_table['variety_id'] = \
     grapes_varieties_df[grapes_varieties_df['grapes_variety'] == 'Sem classificação'].index[0]
 sem_classed_table.head()
@@ -441,10 +442,10 @@ processed_grapes = map_subcategories_to_ids(processed_grapes, grape_subcategorie
 # In[52]:
 
 
-with open('raw_data/opt_05_sub_buttons.json') as f:
+with open(f'{raw_data_path}opt_05_sub_buttons.json') as f:
     imported_goods = json.load(f)
 
-with open('raw_data/opt_06_sub_buttons.json') as f:
+with open(f'{raw_data_path}opt_06_sub_buttons.json') as f:
     exported_goods = json.load(f)
 
 # In[53]:
@@ -538,25 +539,25 @@ def process_wine_data(file_path, sep, goods_varieties, search_term, id_col, drop
 # In[58]:
 
 
-imported_wines = process_wine_data('raw_data/ImpVinhos.csv', ';', goods_varieties, 'Vinhos', 'goods_id', ['Id'],
+imported_wines = process_wine_data(f'{raw_data_path}ImpVinhos.csv', ';', goods_varieties, 'Vinhos', 'goods_id', ['Id'],
                                    {'País': 'country'})
 
 # In[59]:
 
 
-imported_suco = process_wine_data('raw_data/ImpSuco.csv', ';', goods_varieties, 'Suco', 'goods_id', ['Id'],
+imported_suco = process_wine_data(f'{raw_data_path}ImpSuco.csv', ';', goods_varieties, 'Suco', 'goods_id', ['Id'],
                                   {'País': 'country'})
 
 # In[60]:
 
 
-imported_passas = process_wine_data('raw_data/ImpPassas.csv', ';', goods_varieties, 'passas', 'goods_id', ['Id'],
+imported_passas = process_wine_data(f'{raw_data_path}ImpPassas.csv', ';', goods_varieties, 'passas', 'goods_id', ['Id'],
                                     {'País': 'country'})
 
 # In[61]:
 
 
-imported_espumantes = process_wine_data('raw_data/ImpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
+imported_espumantes = process_wine_data(f'{raw_data_path}ImpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
                                         ['Id'], {'País': 'country'})
 
 # In[62]:
@@ -567,13 +568,13 @@ imported_goods = pd.concat([imported_wines, imported_suco, imported_passas, impo
 # In[63]:
 
 
-exported_wines = process_wine_data('raw_data/ExpVinho.csv', ';', goods_varieties, 'Vinhos', 'goods_id', ['Id'],
+exported_wines = process_wine_data(f'{raw_data_path}ExpVinho.csv', ';', goods_varieties, 'Vinhos', 'goods_id', ['Id'],
                                    {'País': 'country'}, imported=False)
 
 # In[64]:
 
 
-exported_suco = process_wine_data('raw_data/ExpSuco.csv', ';', goods_varieties, 'Suco', 'goods_id', ['Id'],
+exported_suco = process_wine_data(f'{raw_data_path}ExpSuco.csv', ';', goods_varieties, 'Suco', 'goods_id', ['Id'],
                                   {'País': 'country'}, imported=False)
 
 # In[65]:
@@ -584,13 +585,13 @@ goods_varieties[goods_varieties['exported'] == 1]
 # In[66]:
 
 
-exported_frescas = process_wine_data('raw_data/ExpUva.csv', ';', goods_varieties, 'frescas', 'goods_id', ['Id'],
+exported_frescas = process_wine_data(f'{raw_data_path}ExpUva.csv', ';', goods_varieties, 'frescas', 'goods_id', ['Id'],
                                      {'País': 'country'}, imported=False)
 
 # In[67]:
 
 
-exported_espumantes = process_wine_data('raw_data/ExpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
+exported_espumantes = process_wine_data(f'{raw_data_path}ExpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
                                         ['Id'], {'País': 'country'}, imported=False)
 
 # In[68]:
@@ -604,79 +605,80 @@ exported_goods = pd.concat([exported_wines, exported_suco, exported_frescas, exp
 # create a directory named transformed_data
 import os
 
-if not os.path.exists('transformed_data'):
-    os.makedirs('transformed_data')
+transformed_data_path = 'data/transformed_data'
+if not os.path.exists(transformed_data_path):
+    os.makedirs(transformed_data_path)
 
 # In[70]:
 
 
 category_df.drop(columns=['category_id'], inplace=True)
-category_df.to_csv('transformed_data/produced_commercialized_categories.csv', index=False)
+category_df.to_csv(f'{transformed_data_path}/produced_commercialized_categories.csv', index=False)
 
 # In[71]:
 
 
 only_categories_producao.rename(columns={'value': 'quantity_in_l'}, inplace=True)
-only_categories_producao.to_csv('transformed_data/produced_categories_with_quantity.csv', index=False)
+only_categories_producao.to_csv(f'{transformed_data_path}/produced_categories_with_quantity.csv', index=False)
 
 # In[72]:
 
 
 only_categories_comercio.rename(columns={'value': 'quantity_in_l'}, inplace=True)
-only_categories_comercio.to_csv('transformed_data/commercialized_categories_with_quantity.csv', index=False)
+only_categories_comercio.to_csv(f'{transformed_data_path}/commercialized_categories_with_quantity.csv', index=False)
 
 # In[73]:
 
 
 subcategories.drop(columns=['subcategory_id'], inplace=True)
-subcategories.to_csv('transformed_data/produced_commercialized_subcategories.csv', index=False)
+subcategories.to_csv(f'{transformed_data_path}/produced_commercialized_subcategories.csv', index=False)
 
 # In[74]:
 
 
 producao_data_subcategory.rename(columns={'value': 'quantity_in_l'}, inplace=True)
-producao_data_subcategory.to_csv('transformed_data/produced_subcategories_with_quantity.csv', index=False)
+producao_data_subcategory.to_csv(f'{transformed_data_path}/produced_subcategories_with_quantity.csv', index=False)
 
 # In[75]:
 
 
 producao_data_subcategory.rename(columns={'value': 'quantity_in_kg'}, inplace=True)
-comercio_data_subcategory.to_csv('transformed_data/commercialized_subcategories_with_quantity.csv', index=False)
+comercio_data_subcategory.to_csv(f'{transformed_data_path}/commercialized_subcategories_with_quantity.csv', index=False)
 
 # In[76]:
 
 
-grapes_varieties_df.to_csv('transformed_data/grape_varieties.csv', index=False)
+grapes_varieties_df.to_csv(f'{transformed_data_path}/grape_varieties.csv', index=False)
 
 # In[77]:
 
 
-grape_categories.to_csv('transformed_data/grape_categories.csv', index=False)
+grape_categories.to_csv(f'{transformed_data_path}/grape_categories.csv', index=False)
 
 # In[78]:
 
 
 grape_subcategories.drop(columns=['subcategory_id'], inplace=True)
-grape_subcategories.to_csv('transformed_data/grape_subcategories.csv', index=False)
+grape_subcategories.to_csv(f'{transformed_data_path}/grape_subcategories.csv', index=False)
 
 # In[79]:
 
 
 processed_grapes.rename(columns={'value': 'quantity_in_kg'}, inplace=True)
-processed_grapes.to_csv('transformed_data/processed_grapes.csv', index=False)
+processed_grapes.to_csv(f'{transformed_data_path}/processed_grapes.csv', index=False)
 
 # In[80]:
 
 
 goods_varieties.drop(columns=['goods_id'], inplace=True)
-goods_varieties.to_csv('transformed_data/goods_varieties.csv', index=False)
+goods_varieties.to_csv(f'{transformed_data_path}/goods_varieties.csv', index=False)
 
 # In[81]:
 
 
-imported_goods.to_csv('transformed_data/imported_goods.csv', index=False)
+imported_goods.to_csv(f'{transformed_data_path}/imported_goods.csv', index=False)
 
 # In[82]:
 
 
-exported_goods.to_csv('transformed_data/exported_goods.csv', index=False)
+exported_goods.to_csv(f'{transformed_data_path}/exported_goods.csv', index=False)
