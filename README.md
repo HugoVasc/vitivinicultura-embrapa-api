@@ -77,6 +77,11 @@ Consulta dos dados de **COMERCIALIZACAO**
 
 ```http
   GET /comercializacao
+  GET /comercializacao/categoria
+  GET /comercializacao/categoria/lista
+  GET /comercializacao/subcategoria
+  GET /comercializacao/subcategoria/lista
+  GET /comercializacao/subcategoria/tipo
 ```
 
 Consulta dos dados de **IMPORTACAO**
