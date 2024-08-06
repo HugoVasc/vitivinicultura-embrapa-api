@@ -98,7 +98,7 @@ Consulta dos dados de **EXPORTACAO**
 
 ## Plano / Desenho
 
-[diagrama](image/plano.png)
+![diagrama](image/plano.png)
 
 ## Colaboradores:
 
