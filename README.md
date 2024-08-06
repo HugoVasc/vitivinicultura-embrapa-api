@@ -5,10 +5,15 @@
 
 Você foi contratado(a) para um consultoria e seu trabalho envolve analisar os dados de vitivinicultura da [Embraba](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
 A idéia do projeto é a criação de uma API pública de consulta nos dados do site nas respectivas abas:
+
 / Produção
+
 / Processamento
+
 / Comercialização
+
 / Importação
+
 / Exportação
 
 A API vai servir para alimentar uma base de dados que futuramente será usada para um modelo de Machine Learning.
