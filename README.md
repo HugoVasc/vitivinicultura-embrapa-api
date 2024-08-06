@@ -1,14 +1,27 @@
 
-# Vitivinicultura Embrapa
+# TechChallenge 1 - Turma 2MLET
 
-API Pública para consulta de dados de produção, processamento, comercialização, importação e exportação de vitivinicultura da Embrapa.
+## Problema
 
-## Colaboradores:
+Você foi contratado(a) para um consultoria e seu trabalho envolve analisar os dados de vitivinicultura da [Embraba](http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_01).
+A idéia do projeto é a criação de uma API pública de consulta nos dados do site nas respectivas abas:
+/ Produção
+/ Processamento
+/ Comercialização
+/ Importação
+/ Exportação
 
-- Euclides Freire - RM357398
-- Hugo Vasconcelos - RM358003
-- Itiro - RM357371
-- João Dias - RM357713
+A API vai servir para alimentar uma base de dados que futuramente será usada para um modelo de Machine Learning.
+
+## Objetivos
+
+1. Criar um REST API em Python que faça a consulta no site da Embrapa.
+2. Sua API deve estar documentada.
+3. É recomendável (não obrigatório) a escolha de um método de autenticação (JWT, por exemplo).
+4. Criar um plano para fazer o deploy da API, desenhando a arquitetura do projeto desde a ingestão até a 
+alimentação do modelo (aqui não é necessário elaborar um modelo de ML, mas é preciso que vocês escolham um cenário interessante em que a API possa ser utilizada.)
+5. Fazer um MVP realizando o deploy com um link compartilhável e um repositório no github.
+
 
 ## Iniciar o App
 ```bash
@@ -29,13 +42,13 @@ uvicorn app.main:app --reload --host 0.0.0.0
 
 ## Documentação da API
 
-### Realiza o **SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados
+### **SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados (SQLite)
 
 ```http
   GET /scrape_and_save_data/scrape_and_save
 ```
 
-### API para consulta aos dados de **PRODUCAO**
+### Consulta dos dados de **PRODUCAO**
 
 ```http
   GET /producao
@@ -46,7 +59,7 @@ uvicorn app.main:app --reload --host 0.0.0.0
   GET /producao/subcategoria/tipo
 ```
 
-### API para consulta aos dados de **PROCESSAMENTO**
+### Consulta dos dados de **PROCESSAMENTO**
 
 ```http
   GET /processamento
@@ -55,20 +68,29 @@ uvicorn app.main:app --reload --host 0.0.0.0
   GET /processamento/id_categoria/{category_id}/ano/{year}
 ```
 
-### API para consulta aos dados de **COMERCIALIZACAO**
+### Consulta dos dados de **COMERCIALIZACAO**
 
 ```http
   GET /comercializacao
 ```
 
-### API para consulta aos dados de **IMPORTACAO**
+### Consulta dos dados de **IMPORTACAO**
 
 ```http
   GET /importacao
 ```
 
-### API para consulta aos dados de **EXPORTACAO**
+### Consulta dos dados de **EXPORTACAO**
 
 ```http
   GET /exportacao
 ```
+
+
+
+## Colaboradores:
+
+- Euclides Freire - RM357398
+- Hugo Vasconcelos - RM358003
+- Gerson Itiro - RM357371
+- João Dias - RM357713
