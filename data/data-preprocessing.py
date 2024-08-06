@@ -291,7 +291,7 @@ mesa_table_categories_df = mesa_table.loc[:, ['control', 'variety_id']][
 # In[34]:
 
 
-sem_classed_table = pd.read_csv(f'{raw_data_path}ProcessaSemClass.csv', sep='\\t', engine='python')
+sem_classed_table = pd.read_csv(f'{raw_data_path}ProcessaSemclass.csv', sep='\\t', engine='python')
 sem_classed_table['variety_id'] = \
     grapes_varieties_df[grapes_varieties_df['grapes_variety'] == 'Sem classificação'].index[0]
 sem_classed_table.head()
