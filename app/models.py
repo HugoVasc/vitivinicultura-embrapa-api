@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 class WineCategories(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    category = Column(String, nullable=False)
 
 
 class WineSubCategories(Base):
