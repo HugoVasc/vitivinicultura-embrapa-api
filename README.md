@@ -29,8 +29,46 @@ uvicorn app.main:app --reload --host 0.0.0.0
 
 ## Documentação da API
 
-### Realiza o scrap dos dados
+### Realiza o **SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados
 
 ```http
-  GET /api/scrap
+  GET /scrape_and_save_data/scrape_and_save
+```
+
+### API para consulta aos dados de **PRODUCAO**
+
+```http
+  GET /producao
+  GET /producao/categoria
+  GET /producao/categoria/lista
+  GET /producao/subcategoria
+  GET /producao/subcategoria/lista
+  GET /producao/subcategoria/tipo
+```
+
+### API para consulta aos dados de **PROCESSAMENTO**
+
+```http
+  GET /processamento
+  GET /processamento/id_categoria/{category_id}
+  GET /processamento/ano/{year}
+  GET /processamento/id_categoria/{category_id}/ano/{year}
+```
+
+### API para consulta aos dados de **COMERCIALIZACAO**
+
+```http
+  GET /comercializacao
+```
+
+### API para consulta aos dados de **IMPORTACAO**
+
+```http
+  GET /importacao
+```
+
+### API para consulta aos dados de **EXPORTACAO**
+
+```http
+  GET /exportacao
 ```
