@@ -5,22 +5,22 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 class WineCategories(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    category = Column(String, nullable=False)
 
 
 class WineSubCategories(Base):
     __tablename__ = "sub_categories"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    subcategory = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"))
 
 
 class ProducedWineCategoriesWithQuantity(Base):
     __tablename__ = "categories_with_quantity"
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"))
+    category = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    quantity_in_l = Column(Integer, nullable=False)
 
 
 class ProducedWineSubCategoriesWithQuantity(Base):
@@ -28,15 +28,15 @@ class ProducedWineSubCategoriesWithQuantity(Base):
     id = Column(Integer, primary_key=True, index=True)
     subcategory_id = Column(Integer, ForeignKey("sub_categories.id"))
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    quantity_in_l = Column(Integer, nullable=False)
 
 
 class ComercializedWineCategoriesWithQuantity(Base):
     __tablename__ = "comercialized_categories_with_quantity"
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(Integer, ForeignKey("categories.id"))
+    category = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    quantity_in_l = Column(Integer, nullable=False)
 
 
 class ComercializedWineSubCategoriesWithQuantity(Base):
@@ -44,7 +44,7 @@ class ComercializedWineSubCategoriesWithQuantity(Base):
     id = Column(Integer, primary_key=True, index=True)
     subcategory_id = Column(Integer, ForeignKey("sub_categories.id"))
     year = Column(Integer, nullable=False)
-    quantity_l = Column(Integer, nullable=False)
+    value = Column(Integer, nullable=False)
 
 
 class GrapeVarieties(Base):
