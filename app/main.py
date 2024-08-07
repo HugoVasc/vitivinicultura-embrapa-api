@@ -16,6 +16,7 @@ async def root():
     """
     return {"message": "Hello World"}
 
+
 app.include_router(scrape_and_save_data.router)
 app.include_router(producao.router)
 app.include_router(comercializacao.router)
