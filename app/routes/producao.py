@@ -1,114 +1,163 @@
 from fastapi import APIRouter
 from starlette import status
-import sqlite3
+from ..database import SessionLocal
+
+from ..models import WineCategories, ProducedWineCategoriesWithQuantity, WineSubCategories, ProducedWineSubCategoriesWithQuantity
 
 router = APIRouter(
     prefix="/producao",
     tags=["producao"],
 )
 
+def format_response(result):
+    response = {}
+    for item in result:
+        # print(item.id, item.category, item.year, item.quantity_in_l)
+        response[str(item[0].id)] = {
+            "categoria": item[1].category,
+            "id_categoria": item[0].category_id,
+            "ano": item[0].year,
+            "quantidade_litros": item[0].quantity_in_l
+        }
+            
+    return response
+
 @router.get("/", status_code=status.HTTP_200_OK)
 async def producao():
     """
     Rota Default para /producao
+    Soma por categoria
     """
 
-    return {
-        'message': 'OK',
-        'env': 'producao'
-    }
-
-@router.get("/id/{id}", status_code=status.HTTP_200_OK)
-def get_id_ano(id: int):
-    """
-    Rota Produção / Detalhes de um item (by ID e ano)
-    """
-    #Banco de Dados
-    try:
-        conn = sqlite3.connect('vitiVinicultura.db')
-        cur = conn.cursor()
-    except:
-        print("Erro na conexão com o banco de dados")    
+    result = SessionLocal().query(
+        ProducedWineCategoriesWithQuantity,
+        WineCategories
+    ).all()
     
-    # cur.execute(f'SELECT sub_categories.id,sub_categories.control,sub_categories.produto,sub_categories_with_quantity.year,sub_categories_with_quantity.quantity_l FROM sub_categories INNER JOIN sub_categories_with_quantity ON sub_categories.id = sub_categories_with_quantity.sub_category_id WHERE sub_categories.id={id}')
-    control = 'NA'
-    produto = 'NA'
-    try:
-        cur.execute(f'SELECT control,produto FROM sub_categories WHERE id={id}')
-        rows = cur.fetchall()
-        for row in rows:
-           control = row[0]
-           produto = row[1]
-    except:
-        print("Erro na consulta sub_categories")
+    return format_response(result)
 
-    quantity_l = 0
-    year_array = []
-    try:
-        cur = conn.cursor()
-        cur.execute(f'SELECT year,quantity_l FROM sub_categories_with_quantity WHERE sub_category_id={id} ORDER BY year')
-        rows = cur.fetchall()
-        for row in rows:
-            year = row[0]
-            quantity_l = row[1]
-            # print(f'{year} {quantity_l}')
+@router.get("/categoria/lista", status_code=status.HTTP_200_OK)
+async def producao_categoria_lista():
+    """
+    Rota para /producao/categoria/lista. 
+    Lista todas as categorias cadastradas.
+    """
+    
+    result = SessionLocal().query(
+        ProducedWineCategoriesWithQuantity,
+        WineCategories
+    # ).join(
+    #     WineCategories, ProducedWineCategoriesWithQuantity.category == WineCategories.id
+    ).all()
+    
+    response = {}
+    for item in result:
+        # print(item.id, item.category, item.year, item.quantity_in_l)
+        response[str(item[1].id)] = {
+            "id": item[1].id,
+            "categoria": item[1].category,
+        }
             
-            item = {}
-            # ano = year
-            item[str(year)] = quantity_l
-            year_array.append(item)
-    except:
-        print("Erro na consulta sub_categories_with_quantity")
+    return response
 
-    conn.close()
-    
-    return { 
-        'id': id,
-        'control': control,
-        'produto': produto,
-        'litros' : year_array
-    }
-    
-@router.get("/ano/{ano}", status_code=status.HTTP_200_OK)
-def get_ano(id: int, ano: int):
+@router.get("/categoria", status_code=status.HTTP_200_OK)
+async def producao_categoria(categoria: str = "VINHO DE MESA"):
     """
-    Rota Produção / Detalhes de um item (by ID e ano)
+    Rota para /producao/categoria.
+    Filtro por categoria
     """
-    #Banco de Dados
-    try:
-        conn = sqlite3.connect('vitiVinicultura.db')
-        cur = conn.cursor()
-    except:
-        print("Erro na conexão com o banco de dados")    
     
-    # cur.execute(f'SELECT sub_categories.id,sub_categories.control,sub_categories.produto,sub_categories_with_quantity.year,sub_categories_with_quantity.quantity_l FROM sub_categories INNER JOIN sub_categories_with_quantity ON sub_categories.id = sub_categories_with_quantity.sub_category_id WHERE sub_categories.id={id}')
-    control = 'NA'
-    produto = 'NA'
-    try:
-        cur.execute(f'SELECT control,produto FROM sub_categories WHERE id={id}')
-        rows = cur.fetchall()
-        for row in rows:
-           control = row[0]
-           produto = row[1]
-    except:
-        print("Erro na consulta sub_categories")
+    print(categoria)
+    result = SessionLocal().query(
+        ProducedWineCategoriesWithQuantity,
+        WineCategories
+    ).join(
+        WineCategories, ProducedWineCategoriesWithQuantity.category_id == WineCategories.id
+    ).filter(
+        WineCategories.category == categoria
+    ).all()
 
-    quantity_l = 0
-    try:
-        cur = conn.cursor()
-        cur.execute(f'SELECT quantity_l FROM sub_categories_with_quantity WHERE sub_category_id={id} AND year={ano}')
-        rows = cur.fetchall()
-        for row in rows:
-            quantity_l = row[0]
-    except:
-        print("Erro na consulta sub_categories_with_quantity")
-
-    conn.close()
+    return format_response(result)
     
-    return { 
-        'id': id,
-        'control': control,
-        'produto': produto,
-        'ano': ano,
-        'litros': quantity_l
-    }
+@router.get("/subcategoria/lista", status_code=status.HTTP_200_OK)
+async def producao_subcategoria_lista():
+    """
+    Rota para /producao/subcategoria/lista. 
+    Lista todas as sub-categorias cadastradas.
+    """
+    
+    result = SessionLocal().query(
+        WineSubCategories,
+        WineCategories
+    ).join(
+        WineCategories, WineSubCategories.category_id == WineCategories.id
+    ).all()
+    
+    response = {}
+    for item in result:
+        # print(item.id, item.category, item.year, item.quantity_in_l)
+        response[str(item[0].id)] = {
+            "subcategoria": item[0].subcategory,
+            "id_categoria": item[0].category_id,
+            "categoria": item[1].category
+        }
+            
+    return response
+
+@router.get("/subcategoria", status_code=status.HTTP_200_OK)
+async def producao_subcategoria():
+    """
+    Rota para /producao/subcategoria. 
+    Lista todas os itens de cada subcategoria.
+    """
+    
+    result = SessionLocal().query(
+        ProducedWineSubCategoriesWithQuantity,
+        WineSubCategories
+    ).join(
+        WineSubCategories, ProducedWineSubCategoriesWithQuantity.subcategory_id == WineSubCategories.id
+    ).all()
+    
+    response = {}
+    for item in result:
+        # print(item.id, item.category, item.year, item.quantity_in_l)
+        response[str(item[0].id)] = {
+            "subcategoria": {
+                "nome": item[1].subcategory,
+                "id": item[0].subcategory_id
+            },
+            "ano": item[0].year,
+            "quantidade_litros": item[0].quantity_in_l
+        }
+            
+    return response
+    
+@router.get("/subcategoria/tipo", status_code=status.HTTP_200_OK)
+async def producao_subcategoria_filtro(subcategoria: str = "Tinto"):
+    """
+    Rota para /producao/subcategoria/tipo. 
+    Lista os items de um sub-categorias especifica
+    """
+    
+    result = SessionLocal().query(
+        ProducedWineSubCategoriesWithQuantity,
+        WineSubCategories
+    ).join(
+        WineSubCategories, ProducedWineSubCategoriesWithQuantity.subcategory_id == WineSubCategories.id
+    ).filter(
+        WineSubCategories.subcategory == subcategoria
+    ).all()
+    
+    response = {}
+    for item in result:
+        # print(item.id, item.category, item.year, item.quantity_in_l)
+        response[str(item[0].id)] = {
+            "subcategoria": {
+                "nome": item[1].subcategory,
+                "id": item[0].subcategory_id
+            },
+            "ano": item[0].year,
+            "quantidade_litros": item[0].quantity_in_l
+        }
+            
+    return response
