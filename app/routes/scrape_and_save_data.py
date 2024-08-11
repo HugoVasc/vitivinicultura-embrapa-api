@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.get("/scrape_and_save")
+@router.post("/scrape_and_save")
 async def scrape_and_save_data():
     """
     Rota para realizar o scrap, pré-processar e salvar os dados no banco de dados
