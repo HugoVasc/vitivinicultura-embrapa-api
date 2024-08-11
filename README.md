@@ -50,7 +50,7 @@ uvicorn app.main:app --reload --host 0.0.0.0
 **SCRAP** dos dados da Embrapa, ETL e gravação no Banco de Dados (SQLite)
 
 ```http
-  GET /scrape_and_save_data/scrape_and_save
+  POST /scrape_and_save_data/scrape_and_save
 ```
 
 Consulta dos dados de **PRODUCAO**
