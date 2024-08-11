@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from sqlalchemy.orm import Session
 from .database import SessionLocal
 from .models import (
     WineCategories,
@@ -37,15 +38,24 @@ files_to_load = {
 
 
 def load_data():
-    db = SessionLocal()
+    db: Session = SessionLocal()
     try:
         for file, model in files_to_load.items():
-            df = pd.read_csv(os.path.join(transformed_data_dir, file))
-            df.index.name = 'id'  # Set the index name to 'id'
-            df.reset_index(inplace=True)  # Move the index into a column
-            df.to_sql(model.__tablename__, db.bind, if_exists='replace', index=False)
-        print('Data loaded successfully')
+            file_path = os.path.join(transformed_data_dir, file)
+            if os.path.exists(file_path):
+                df = pd.read_csv(file_path)
+                # Drop rows with any null values
+                df.dropna(inplace=True)
+                df_records = df.to_dict(orient='records')
+
+                for record in df_records:
+                    db.add(model(**record))
+                db.commit()
+                print(f'Data from {file} loaded successfully into {model.__tablename__}.')
+            else:
+                print(f'File {file} does not exist.')
     except Exception as e:
+        db.rollback()
         print(f"An error occurred: {e}")
     finally:
         db.close()

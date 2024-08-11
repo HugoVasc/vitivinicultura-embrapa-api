@@ -123,18 +123,20 @@ category_df
 
 
 only_categories_producao = producao_data[producao_data['control'].str.isupper()]
-only_categories_producao.rename(columns={'control': 'category'}, inplace=True)
+only_categories_producao = map_categories_to_ids(only_categories_producao, category_df)
+only_categories_producao.rename(columns={'control': 'category_id'}, inplace=True)
 only_categories_producao.drop(columns=['id', 'produto'], inplace=True)
-only_categories_producao = only_categories_producao.melt(id_vars=['category'], var_name='year', value_name='value')
+only_categories_producao = only_categories_producao.melt(id_vars=['category_id'], var_name='year', value_name='value')
 only_categories_producao['year'] = only_categories_producao['year'].astype(int)
 
 # In[15]:
 
 
 only_categories_comercio = comercio_data[comercio_data['control'].str.isupper()]
-only_categories_comercio.rename(columns={'control': 'category'}, inplace=True)
+only_categories_comercio = map_categories_to_ids(only_categories_comercio, category_df)
+only_categories_comercio.rename(columns={'control': 'category_id'}, inplace=True)
 only_categories_comercio.drop(columns=['id', 'produto'], inplace=True)
-only_categories_comercio = only_categories_comercio.melt(id_vars=['category'], var_name='year', value_name='value')
+only_categories_comercio = only_categories_comercio.melt(id_vars=['category_id'], var_name='year', value_name='value')
 only_categories_comercio['year'] = only_categories_comercio['year'].astype(int)
 
 # In[16]:
@@ -557,7 +559,8 @@ imported_passas = process_wine_data(f'{raw_data_path}ImpPassas.csv', ';', goods_
 # In[61]:
 
 
-imported_espumantes = process_wine_data(f'{raw_data_path}ImpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
+imported_espumantes = process_wine_data(f'{raw_data_path}ImpEspumantes.csv', ';', goods_varieties, 'Espumantes',
+                                        'goods_id',
                                         ['Id'], {'País': 'country'})
 
 # In[62]:
@@ -591,7 +594,8 @@ exported_frescas = process_wine_data(f'{raw_data_path}ExpUva.csv', ';', goods_va
 # In[67]:
 
 
-exported_espumantes = process_wine_data(f'{raw_data_path}ExpEspumantes.csv', ';', goods_varieties, 'Espumantes', 'goods_id',
+exported_espumantes = process_wine_data(f'{raw_data_path}ExpEspumantes.csv', ';', goods_varieties, 'Espumantes',
+                                        'goods_id',
                                         ['Id'], {'País': 'country'}, imported=False)
 
 # In[68]:
@@ -642,23 +646,24 @@ producao_data_subcategory.to_csv(f'{transformed_data_path}/produced_subcategorie
 # In[75]:
 
 
-producao_data_subcategory.rename(columns={'value': 'quantity_in_kg'}, inplace=True)
+comercio_data_subcategory.rename(columns={'value': 'quantity_in_l'}, inplace=True)
 comercio_data_subcategory.to_csv(f'{transformed_data_path}/commercialized_subcategories_with_quantity.csv', index=False)
 
 # In[76]:
 
-
+grapes_varieties_df.rename(columns={'grapes_variety': 'name'}, inplace=True)
 grapes_varieties_df.to_csv(f'{transformed_data_path}/grape_varieties.csv', index=False)
 
 # In[77]:
 
-
+grape_categories.rename(columns={'grapes_categories': 'name'}, inplace=True)
 grape_categories.to_csv(f'{transformed_data_path}/grape_categories.csv', index=False)
 
 # In[78]:
 
 
 grape_subcategories.drop(columns=['subcategory_id'], inplace=True)
+grape_subcategories.rename(columns={'subcategory': 'name'}, inplace=True)
 grape_subcategories.to_csv(f'{transformed_data_path}/grape_subcategories.csv', index=False)
 
 # In[79]:
@@ -671,6 +676,7 @@ processed_grapes.to_csv(f'{transformed_data_path}/processed_grapes.csv', index=F
 
 
 goods_varieties.drop(columns=['goods_id'], inplace=True)
+goods_varieties.rename(columns={'goods': 'name'}, inplace=True)
 goods_varieties.to_csv(f'{transformed_data_path}/goods_varieties.csv', index=False)
 
 # In[81]:
