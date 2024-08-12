@@ -1,12 +1,18 @@
 from fastapi import APIRouter, Path
 from numpy import integer
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from starlette import status
 from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import SessionLocal, db_dependency
 
 from ..models import GrapeVarieties, GrapeCategories, GrapeSubCategories, ProcessedGrapes
+
+router = APIRouter(
+    prefix="/processamento",
+    tags=["processamento"],
+)
+
 
 class GrapeVarietyRequest(BaseModel):
     name: str
@@ -19,11 +25,13 @@ class GrapeSubCategoryRequest(BaseModel):
     name: str
     category_id: int
 
-class ProcessedGrapesRequest(BaseModel):
+class ProcessedGrapesPutDeleteRequest(BaseModel):
     variety_id: int
     category_id: int
     subcategory_id: int
     year: int
+
+class ProcessedGrapesRequest(ProcessedGrapesPutDeleteRequest):
     quantity_in_kg: int
 
 class GrapeVarietyResponse(GrapeVarietyRequest):
@@ -39,39 +47,31 @@ class ProcessedGrapesResponse(ProcessedGrapesRequest):
     id: int
 
 
-router = APIRouter(
-    prefix="/processamento",
-    tags=["processamento"],
-)
-
-
 def format_request_response(result):
     response = {}
     for item in result:
-        print([x.__dict__ for x in item])
-
-        # Verifica e adiciona a chave do item[1]
+        # Verifica e adiciona a chave para varieties
         if str(item[1].id) not in response:
             response[str(item[1].id)] = {
                 "name": item[1].name,
                 "categories": {}
             }
 
-        # Verifica e adiciona a chave do item[2]
+        # Verifica e adiciona a chave para categories
         if str(item[2].id) not in response[str(item[1].id)]["categories"]:
             response[str(item[1].id)]["categories"][str(item[2].id)] = {
                 "name": item[2].name,
                 "subcategories": {}
             }
 
-        # Verifica e adiciona a chave do item[3]
+        # Verifica e adiciona a chave para subcategories
         if str(item[3].id) not in response[str(item[1].id)]["categories"][str(item[2].id)]["subcategories"]:
             response[str(item[1].id)]["categories"][str(item[2].id)]["subcategories"][str(item[3].id)] = {
                 "name": item[3].name,
                 "processed_grapes_in_kg_by_year": {}
             }
 
-        # Adiciona ou atualiza o ano e a quantidade de uvas processadas
+        # Adiciona o ano ou atualiza a quantidade de uvas processadas em kg daquele ano
         response[str(item[1].id)]["categories"][str(item[2].id)]["subcategories"][str(item[3].id)][
             "processed_grapes_in_kg_by_year"][item[0].year] = item[0].quantity_in_kg
 
@@ -88,12 +88,12 @@ def format_default_response(result, option):
 
     return {
         "message": options[option],
-        "content": result
+        "content": result.__dict__
     }
 
 #CREATE
 @router.post("/variety", status_code=status.HTTP_201_CREATED)
-async def create_grape_variety(grape_variety: GrapeVarietyRequest, db: db_dependency) -> GrapeVarietyResponse:
+async def create_grape_variety(grape_variety: GrapeVarietyRequest, db: db_dependency):
     variety = GrapeVarieties(**grape_variety.model_dump())
     db.add(variety)
     db.commit()
@@ -101,7 +101,7 @@ async def create_grape_variety(grape_variety: GrapeVarietyRequest, db: db_depend
     return format_default_response(variety, "create")
 
 @router.post("/category", status_code=status.HTTP_201_CREATED)
-async def create_grape_category(grape_category: GrapeCategoryRequest, db: db_dependency) -> GrapeCategoryResponse:
+async def create_grape_category(grape_category: GrapeCategoryRequest, db: db_dependency):
     category = GrapeCategories(**grape_category.model_dump())
     db.add(category)
     db.commit()
@@ -109,7 +109,7 @@ async def create_grape_category(grape_category: GrapeCategoryRequest, db: db_dep
     return format_default_response(category, "create")
 
 @router.post("/subcategory", status_code=status.HTTP_201_CREATED)
-async def create_grape_subcategory(grape_subcategory: GrapeSubCategoryRequest, db: db_dependency) -> GrapeSubCategoryResponse:
+async def create_grape_subcategory(grape_subcategory: GrapeSubCategoryRequest, db: db_dependency):
     subcategory = GrapeSubCategories(**grape_subcategory.model_dump())
     db.add(subcategory)
     db.commit()
@@ -117,7 +117,7 @@ async def create_grape_subcategory(grape_subcategory: GrapeSubCategoryRequest, d
     return format_default_response(subcategory, "create")
 
 @router.post("/processed_grapes", status_code=status.HTTP_201_CREATED)
-async def create_processed_grapes(processed_grapes: ProcessedGrapesRequest, db: db_dependency) -> ProcessedGrapesResponse:
+async def create_processed_grapes(processed_grapes: ProcessedGrapesRequest, db: db_dependency):
     grapes = ProcessedGrapes(**processed_grapes.model_dump())
     db.add(grapes)
     db.commit()
@@ -211,22 +211,28 @@ async def processamento_by_category_id_and_year(category_id: int, year: int = Pa
 
 #UPDATE
 
-@router.put("/processed_grapes/{processed_grapes_id}", status_code=status.HTTP_200_OK)
-async def update_processed_grapes(processed_grapes_id: int, processed_grapes: ProcessedGrapesRequest, db: db_dependency) -> ProcessedGrapesResponse:
-    grapes = db.query(ProcessedGrapes).filter(ProcessedGrapes.id == processed_grapes_id).first()
-    grapes.variety_id = processed_grapes.variety_id
-    grapes.category_id = processed_grapes.category_id
-    grapes.subcategory_id = processed_grapes.subcategory_id
-    grapes.year = processed_grapes.year
-    grapes.quantity_in_kg = processed_grapes.quantity_in_kg
+@router.put("/processed_grapes/{processed_grapes_quantity_in_kg}", status_code=status.HTTP_200_OK)
+async def update_processed_grapes(processed_grapes_quantity_in_kg: int, processed_grapes: ProcessedGrapesPutDeleteRequest, db: db_dependency):
+    grapes = db.query(ProcessedGrapes).filter(
+        ProcessedGrapes.variety_id == processed_grapes.variety_id,
+        ProcessedGrapes.category_id == processed_grapes.category_id,
+        ProcessedGrapes.subcategory_id == processed_grapes.subcategory_id,
+        ProcessedGrapes.year == processed_grapes.year
+    ).first()
+    grapes.quantity_in_kg = processed_grapes_quantity_in_kg
     db.commit()
     db.refresh(grapes)
     return format_default_response(grapes, "update")
 
 #DELETE
-@router.delete("/processed_grapes/{processed_grapes_id}", status_code=status.HTTP_200_OK)
-async def delete_processed_grapes(processed_grapes_id: int, db: db_dependency) -> ProcessedGrapesResponse:
-    grapes = db.query(ProcessedGrapes).filter(ProcessedGrapes.id == processed_grapes_id).first()
+@router.delete("/processed_grapes", status_code=status.HTTP_200_OK)
+async def delete_processed_grapes(processed_grapes: ProcessedGrapesPutDeleteRequest, db: db_dependency):
+    grapes = db.query(ProcessedGrapes).filter(
+        ProcessedGrapes.variety_id == processed_grapes.variety_id,
+        ProcessedGrapes.category_id == processed_grapes.category_id,
+        ProcessedGrapes.subcategory_id == processed_grapes.subcategory_id,
+        ProcessedGrapes.year == processed_grapes.year
+    ).first()
     db.delete(grapes)
     db.commit()
     return format_default_response(grapes, "delete")
