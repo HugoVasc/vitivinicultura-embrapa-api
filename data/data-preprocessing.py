@@ -296,6 +296,9 @@ mesa_table_categories_df = mesa_table.loc[:, ['control', 'variety_id']][
 sem_classed_table = pd.read_csv(f'{raw_data_path}ProcessaSemclass.csv', sep='\\t', engine='python')
 sem_classed_table['variety_id'] = \
     grapes_varieties_df[grapes_varieties_df['grapes_variety'] == 'Sem classificação'].index[0]
+sem_classed_table['control'] = sem_classed_table['control'].map(
+    {'sc': 'Sem classificação'})
+
 sem_classed_table.head()
 
 # In[35]:
@@ -405,7 +408,7 @@ mesa_table = fill_values_with_nan(mesa_table)
 
 # In[46]:
 
-
+sem_classed_table['control'] = grape_categories[grape_categories['grapes_categories'] == 'Sem classificação'].index[0]
 sem_classed_table.rename(columns={'control': 'category_id', 'cultivar': 'subcategory'}, inplace=True)
 sem_classed_table.drop(columns=['id'], inplace=True)
 sem_classed_table = sem_classed_table.melt(id_vars=['category_id', 'subcategory', 'variety_id'], var_name='year',
@@ -623,30 +626,35 @@ category_df.to_csv(f'{transformed_data_path}/produced_commercialized_categories.
 
 
 only_categories_producao.rename(columns={'value': 'quantity_in_l'}, inplace=True)
+only_categories_producao['category_id'] = only_categories_producao['category_id'] + 1
 only_categories_producao.to_csv(f'{transformed_data_path}/produced_categories_with_quantity.csv', index=False)
 
 # In[72]:
 
 
 only_categories_comercio.rename(columns={'value': 'quantity_in_l'}, inplace=True)
+only_categories_comercio['category_id'] = only_categories_comercio['category_id'] + 1
 only_categories_comercio.to_csv(f'{transformed_data_path}/commercialized_categories_with_quantity.csv', index=False)
 
 # In[73]:
 
 
 subcategories.drop(columns=['subcategory_id'], inplace=True)
+subcategories['category_id'] = subcategories['category_id'] + 1
 subcategories.to_csv(f'{transformed_data_path}/produced_commercialized_subcategories.csv', index=False)
 
 # In[74]:
 
 
 producao_data_subcategory.rename(columns={'value': 'quantity_in_l'}, inplace=True)
+producao_data_subcategory['subcategory_id'] = producao_data_subcategory['subcategory_id'] + 1
 producao_data_subcategory.to_csv(f'{transformed_data_path}/produced_subcategories_with_quantity.csv', index=False)
 
 # In[75]:
 
 
 comercio_data_subcategory.rename(columns={'value': 'quantity_in_l'}, inplace=True)
+comercio_data_subcategory['subcategory_id'] = comercio_data_subcategory['subcategory_id'] + 1
 comercio_data_subcategory.to_csv(f'{transformed_data_path}/commercialized_subcategories_with_quantity.csv', index=False)
 
 # In[76]:
@@ -657,6 +665,7 @@ grapes_varieties_df.to_csv(f'{transformed_data_path}/grape_varieties.csv', index
 # In[77]:
 
 grape_categories.rename(columns={'grapes_categories': 'name'}, inplace=True)
+grape_categories['variety_id'] = grape_categories['variety_id'] + 1
 grape_categories.to_csv(f'{transformed_data_path}/grape_categories.csv', index=False)
 
 # In[78]:
@@ -664,12 +673,16 @@ grape_categories.to_csv(f'{transformed_data_path}/grape_categories.csv', index=F
 
 grape_subcategories.drop(columns=['subcategory_id'], inplace=True)
 grape_subcategories.rename(columns={'subcategory': 'name'}, inplace=True)
+grape_subcategories['category_id'] = grape_subcategories['category_id'] + 1
 grape_subcategories.to_csv(f'{transformed_data_path}/grape_subcategories.csv', index=False)
 
 # In[79]:
 
 
 processed_grapes.rename(columns={'value': 'quantity_in_kg'}, inplace=True)
+processed_grapes['subcategory_id'] = processed_grapes['subcategory_id'] + 1
+processed_grapes['category_id'] = processed_grapes['category_id'] + 1
+processed_grapes['variety_id'] = processed_grapes['variety_id'] + 1
 processed_grapes.to_csv(f'{transformed_data_path}/processed_grapes.csv', index=False)
 
 # In[80]:
@@ -681,10 +694,10 @@ goods_varieties.to_csv(f'{transformed_data_path}/goods_varieties.csv', index=Fal
 
 # In[81]:
 
-
+imported_goods['goods_id'] = imported_goods['goods_id'] + 1
 imported_goods.to_csv(f'{transformed_data_path}/imported_goods.csv', index=False)
 
 # In[82]:
 
-
+exported_goods['goods_id'] = exported_goods['goods_id'] + 1
 exported_goods.to_csv(f'{transformed_data_path}/exported_goods.csv', index=False)
