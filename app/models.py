@@ -1,11 +1,15 @@
 from .database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
 
 
 class WineCategories(Base):
     __tablename__ = "wine_categories"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     category = Column(String, nullable=False)
+    subcategories = relationship("WineSubCategories", back_populates="category")
+    produced_wine = relationship("ProducedWineCategoriesWithQuantity", back_populates="category")
+    comercialized_wine = relationship("ComercializedWineCategoriesWithQuantity", back_populates="category")
 
 
 class WineSubCategories(Base):
@@ -13,6 +17,9 @@ class WineSubCategories(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     subcategory = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("wine_categories.id"))
+    category = relationship("WineCategories", back_populates="subcategories")
+    produced_wine = relationship("ProducedWineSubCategoriesWithQuantity", back_populates="subcategory")
+    comercialized_wine = relationship("ComercializedWineSubCategoriesWithQuantity", back_populates="subcategory")
 
 
 class ProducedWineCategoriesWithQuantity(Base):
@@ -21,6 +28,7 @@ class ProducedWineCategoriesWithQuantity(Base):
     category_id = Column(Integer, ForeignKey("wine_categories.id"))
     year = Column(Integer, nullable=False)
     quantity_in_l = Column(Integer, nullable=False)
+    category = relationship("WineCategories", back_populates="produced_wine")
 
 
 class ProducedWineSubCategoriesWithQuantity(Base):
@@ -29,6 +37,7 @@ class ProducedWineSubCategoriesWithQuantity(Base):
     subcategory_id = Column(Integer, ForeignKey("wine_sub_categories.id"))
     year = Column(Integer, nullable=False)
     quantity_in_l = Column(Integer, nullable=False)
+    subcategory = relationship("WineSubCategories", back_populates="produced_wine")
 
 
 class ComercializedWineCategoriesWithQuantity(Base):
@@ -37,6 +46,7 @@ class ComercializedWineCategoriesWithQuantity(Base):
     category_id = Column(Integer, ForeignKey("wine_categories.id"))
     year = Column(Integer, nullable=False)
     quantity_in_l = Column(Integer, nullable=False)
+    category = relationship("WineCategories", back_populates="comercialized_wine")
 
 
 class ComercializedWineSubCategoriesWithQuantity(Base):
@@ -45,12 +55,14 @@ class ComercializedWineSubCategoriesWithQuantity(Base):
     subcategory_id = Column(Integer, ForeignKey("wine_sub_categories.id"))
     year = Column(Integer, nullable=False)
     quantity_in_l = Column(Integer, nullable=False)
+    subcategory = relationship("WineSubCategories", back_populates="comercialized_wine")
 
 
 class GrapeVarieties(Base):
     __tablename__ = "grape_varieties"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
+    categories = relationship("GrapeCategories", back_populates="variety")
 
 
 class GrapeCategories(Base):
@@ -58,6 +70,8 @@ class GrapeCategories(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     variety_id = Column(Integer, ForeignKey("grape_varieties.id"))
+    variety = relationship("GrapeVarieties", back_populates="categories")
+    subcategories = relationship("GrapeSubCategories", back_populates="category")
 
 
 class GrapeSubCategories(Base):
@@ -65,6 +79,7 @@ class GrapeSubCategories(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("grape_categories.id"))
+    category = relationship("GrapeCategories", back_populates="subcategories")
 
 
 class ProcessedGrapes(Base):
@@ -75,6 +90,9 @@ class ProcessedGrapes(Base):
     variety_id = Column(Integer, ForeignKey("grape_varieties.id"))
     year = Column(Integer, nullable=False)
     quantity_in_kg = Column(Integer, nullable=False)
+    category = relationship("GrapeCategories")
+    subcategory = relationship("GrapeSubCategories")
+    variety = relationship("GrapeVarieties")
 
 
 class GoodsImportedExported(Base):
@@ -83,6 +101,8 @@ class GoodsImportedExported(Base):
     name = Column(String, nullable=False)
     imported = Column(Boolean, nullable=False, default=False)
     exported = Column(Boolean, nullable=False, default=False)
+    importacao = relationship("Importacao", back_populates="goods")
+    exportacao = relationship("Exportacao", back_populates="goods")
 
 
 class CommonColumnsImportExport(Base):
@@ -98,8 +118,10 @@ class CommonColumnsImportExport(Base):
 class Importacao(CommonColumnsImportExport):
     __tablename__ = "importacao"
     # Additional columns specific to Importacao can be added here
+    goods = relationship("GoodsImportedExported", back_populates="importacao")
 
 
 class Exportacao(CommonColumnsImportExport):
     __tablename__ = "exportacao"
     # Additional columns specific to Exportacao can be added here
+    goods = relationship("GoodsImportedExported", back_populates="exportacao")
